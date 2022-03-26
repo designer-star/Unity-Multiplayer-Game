@@ -20,6 +20,14 @@ public class PlayerControl : MonoBehaviour
     public CharacterController charCon;
 
     private Camera cam;
+
+    public float jumpForce = 12f, gravityMode = 2.5f;
+
+
+
+
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -67,8 +75,13 @@ public class PlayerControl : MonoBehaviour
             movement.y = 0;
         }
 
+        if (Input.GetButtonDown("Jump"))
+        {
+            movement.y = jumpForce;
+        }
 
-        movement.y += Physics.gravity.y * Time.deltaTime;
+
+        movement.y += Physics.gravity.y * Time.deltaTime * gravityMode;
 
         //transform.position += movement * moveSpeed * Time.deltaTime;
        charCon.Move( movement * Time.deltaTime);
