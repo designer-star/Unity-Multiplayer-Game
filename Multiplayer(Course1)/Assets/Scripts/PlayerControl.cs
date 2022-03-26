@@ -90,6 +90,17 @@ public class PlayerControl : MonoBehaviour
         //transform.position += movement * moveSpeed * Time.deltaTime;
        charCon.Move( movement * Time.deltaTime);
 
+
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            Shoot();
+        }
+
+
+
+
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Cursor.lockState = CursorLockMode.None;
@@ -102,6 +113,19 @@ public class PlayerControl : MonoBehaviour
             }
         }
     }
+
+
+    private void Shoot ()
+    {
+        Ray ray = cam.ViewportPointToRay(new Vector3(.5f, .5f, 0f)); // Center point of screen
+        ray.origin = cam.transform.position;
+
+        if(Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Debug.Log("We hit " + hit.collider);
+        }
+    }
+
 
     private void LateUpdate()
     {
