@@ -914,6 +914,8 @@ MonoBehaviour:
   groundLayers:
     serializedVersion: 2
     m_Bits: 256
+  buletImpact: {fileID: 3062270905621026477, guid: fecb673990c96b546bc132168ad4dbbe,
+    type: 3}
 --- !u!1 &942500371
 GameObject:
   m_ObjectHideFlags: 0

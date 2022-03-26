@@ -28,6 +28,7 @@ public class PlayerControl : MonoBehaviour
     public LayerMask groundLayers;
 
 
+    public GameObject buletImpact;
 
 
     // Start is called before the first frame update
@@ -123,6 +124,9 @@ public class PlayerControl : MonoBehaviour
         if(Physics.Raycast(ray, out RaycastHit hit))
         {
             Debug.Log("We hit " + hit.collider);
+
+            GameObject buleImpactObject = Instantiate(buletImpact, hit.point + (hit.normal * .002f), Quaternion.LookRotation(hit.normal, Vector3.up));
+            Destroy(buleImpactObject, 10f);
         }
     }
 
