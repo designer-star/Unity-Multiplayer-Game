@@ -29,6 +29,8 @@ public class PlayerControl : MonoBehaviour
 
 
     public GameObject buletImpact;
+    public float timeBetwenShoots = .1f;
+    private float shootControler;
 
 
     // Start is called before the first frame update
@@ -97,7 +99,15 @@ public class PlayerControl : MonoBehaviour
         {
             Shoot();
         }
+        if (Input.GetMouseButton(0))
+        {
+            shootControler -= Time.deltaTime;
 
+            if(shootControler <= 0)
+            {
+                Shoot();
+            }
+        }
 
 
 
@@ -128,6 +138,9 @@ public class PlayerControl : MonoBehaviour
             GameObject buleImpactObject = Instantiate(buletImpact, hit.point + (hit.normal * .002f), Quaternion.LookRotation(hit.normal, Vector3.up));
             Destroy(buleImpactObject, 10f);
         }
+
+
+        shootControler = timeBetwenShoots;
     }
 
 
