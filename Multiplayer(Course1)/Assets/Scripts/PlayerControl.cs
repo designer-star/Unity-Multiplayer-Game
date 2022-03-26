@@ -23,7 +23,9 @@ public class PlayerControl : MonoBehaviour
 
     public float jumpForce = 12f, gravityMode = 2.5f;
 
-
+    public Transform groundCheckPoint;
+    private bool isGrounded;
+    public LayerMask groundLayers;
 
 
 
@@ -75,7 +77,9 @@ public class PlayerControl : MonoBehaviour
             movement.y = 0;
         }
 
-        if (Input.GetButtonDown("Jump"))
+        isGrounded = Physics.Raycast(groundCheckPoint.position, Vector3.down, .25f, groundLayers);
+
+        if (Input.GetButtonDown("Jump") && isGrounded)
         {
             movement.y = jumpForce;
         }
