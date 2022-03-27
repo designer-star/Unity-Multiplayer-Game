@@ -33,6 +33,11 @@ public class PlayerControl : MonoBehaviour
     private float shootControler;
 
 
+    public float maxHeat = 10f, heatPerShot = 1f, coolRate = 4f, overbeatCoolRate = 5f;
+    private float heatCounter;
+    private bool overHeated;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -94,19 +99,35 @@ public class PlayerControl : MonoBehaviour
        charCon.Move( movement * Time.deltaTime);
 
 
-
-        if (Input.GetMouseButtonDown(0))
+        if (!overHeated)
         {
-            Shoot();
-        }
-        if (Input.GetMouseButton(0))
-        {
-            shootControler -= Time.deltaTime;
-
-            if(shootControler <= 0)
+            if (Input.GetMouseButtonDown(0))
             {
                 Shoot();
             }
+            if (Input.GetMouseButton(0))
+            {
+                shootControler -= Time.deltaTime;
+
+                if (shootControler <= 0)
+                {
+                    Shoot();
+                }
+            }
+            heatCounter -= coolRate * Time.deltaTime;
+        }
+        else
+        {
+            heatCounter -= overbeatCoolRate * Time.deltaTime;
+            if(heatCounter <= 0)
+            {
+                heatCounter = 0;
+                overHeated = false;
+            }
+        }
+        if (heatCounter < 0)
+        {
+            heatCounter = 0f;
         }
 
 
@@ -141,6 +162,13 @@ public class PlayerControl : MonoBehaviour
 
 
         shootControler = timeBetwenShoots;
+
+        heatCounter += heatPerShot;
+        if (heatCounter >= maxHeat)
+        {
+            heatCounter = maxHeat;
+            overHeated = true;
+        }
     }
 
 
