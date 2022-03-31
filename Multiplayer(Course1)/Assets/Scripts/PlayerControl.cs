@@ -30,11 +30,11 @@ public class PlayerControl : MonoBehaviour
 
 
     public GameObject buletImpact;
-    public float timeBetwenShoots = .1f;
+    //public float timeBetwenShoots = .1f;
     private float shootControler;
 
 
-    public float maxHeat = 10f, heatPerShot = 1f, coolRate = 4f, overbeatCoolRate = 5f;
+    public float maxHeat = 10f, /*heatPerShot = 1f,*/ coolRate = 4f, overbeatCoolRate = 5f;
     private float heatCounter;
     private bool overHeated;
 
@@ -117,7 +117,7 @@ public class PlayerControl : MonoBehaviour
             {
                 Shoot();
             }
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(0) && allGuns[selectedGun].isAutomatic)
             {
                 shootControler -= Time.deltaTime;
 
@@ -199,9 +199,9 @@ public class PlayerControl : MonoBehaviour
         }
 
 
-        shootControler = timeBetwenShoots;
+        shootControler = allGuns[selectedGun].timeBetwenSots;
 
-        heatCounter += heatPerShot;
+        heatCounter += allGuns[selectedGun].heatPerShot;
         if (heatCounter >= maxHeat)
         {
             heatCounter = maxHeat;
