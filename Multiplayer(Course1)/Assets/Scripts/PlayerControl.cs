@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerControl : MonoBehaviour
 {
@@ -38,6 +39,10 @@ public class PlayerControl : MonoBehaviour
     private bool overHeated;
 
 
+    public Gun[] allGuns;
+    private int selectedGun;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -45,11 +50,16 @@ public class PlayerControl : MonoBehaviour
         cam = Camera.main;
 
         UIController.instance.weaponTempSlider.maxValue = maxHeat;
+
+
+        SwitchGun();
     }
 
     // Update is called once per frame
     void Update()
     {
+
+
         mouseInput = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y")) * mouseSensitivity;
         transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + mouseInput.x, transform.rotation.eulerAngles.z);
         verticalRotStore += mouseInput.y;
@@ -138,6 +148,29 @@ public class PlayerControl : MonoBehaviour
 
 
 
+
+        if (Input.GetAxisRaw("MouseScrollWheel") > 0f)
+        {
+            selectedGun++;
+            if (selectedGun >= allGuns.Length)
+            {
+                selectedGun = 0;
+            }
+            SwitchGun();
+        }
+        else if (Input.GetAxisRaw("MouseScrollWheel") < 0f)
+        {
+            selectedGun--;
+            if (selectedGun < 0)
+            {
+                selectedGun = allGuns.Length - 1;
+            }
+            SwitchGun();
+        }
+
+
+
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Cursor.lockState = CursorLockMode.None;
@@ -183,5 +216,14 @@ public class PlayerControl : MonoBehaviour
     {
         cam.transform.position = viewPoint.position;
         cam.transform.rotation = viewPoint.rotation;
+    }
+
+    void SwitchGun()
+    {
+        foreach (Gun gun in allGuns)
+        {
+            gun.gameObject.SetActive(false);
+        }
+        allGuns[selectedGun].gameObject.SetActive(true);
     }
 }

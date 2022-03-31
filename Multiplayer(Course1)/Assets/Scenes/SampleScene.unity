@@ -1413,6 +1413,10 @@ MonoBehaviour:
   heatPerShot: 1
   coolRate: 4
   overbeatCoolRate: 5
+  allGuns:
+  - {fileID: 250675137}
+  - {fileID: 101694612}
+  - {fileID: 1710051845}
 --- !u!1 &766509553
 GameObject:
   m_ObjectHideFlags: 0
