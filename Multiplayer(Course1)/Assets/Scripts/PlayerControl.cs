@@ -53,9 +53,13 @@ public class PlayerControl : MonoBehaviour
         cam = Camera.main;
 
         UIController.instance.weaponTempSlider.maxValue = maxHeat;
-
+        
 
         SwitchGun();
+
+        Transform newTrans = SpownManager.instance.GetSpawnPoint();
+        transform.position = newTrans.position;
+        transform.rotation = newTrans.rotation;
     }
 
     // Update is called once per frame
