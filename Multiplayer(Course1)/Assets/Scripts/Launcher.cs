@@ -29,6 +29,11 @@ public class Launcher : MonoBehaviourPunCallbacks
     public TMP_Text errorText;
 
 
+    public GameObject roomBrowserScreen;
+    public RoomButton theRoomButton;
+    private List<RoomButton> allRoomButtons = new List<RoomButton>();
+
+
     private void Awake()
     {
         instance = this;
@@ -54,6 +59,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         createRoomScreen.SetActive(false);
         roomScreen.SetActive(false);
         errorScreen.SetActive(false);
+        roomBrowserScreen.SetActive(false);
     }
 
 
@@ -127,5 +133,39 @@ public class Launcher : MonoBehaviourPunCallbacks
     {
         CloseMenu();
         menuButtons.SetActive(true);
+    }
+
+    public void openRoomBrowser()
+    {
+        CloseMenu();
+        roomBrowserScreen.SetActive(true);
+    }
+
+    public void closeRoomBrowser()
+    {
+        CloseMenu();
+        menuButtons.SetActive(true);
+    }
+
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        foreach(RoomButton rb in allRoomButtons)
+        {
+            Destroy(rb.gameObject);
+        }
+        allRoomButtons.Clear();
+        theRoomButton.gameObject.SetActive(false);
+
+        for(int i = 0; i < roomList.Count; i++)
+        {
+            if (roomList[i].PlayerCount != roomList[i].MaxPlayers && !roomList[i].RemovedFromList)
+            {
+                RoomButton newButton = Instantiate(theRoomButton, theRoomButton.transform.parent);
+                newButton.SetButtonDetails(roomList[i]);
+                newButton.gameObject.SetActive(true);
+
+                allRoomButtons.Add(newButton);
+            }
+        }
     }
 }
