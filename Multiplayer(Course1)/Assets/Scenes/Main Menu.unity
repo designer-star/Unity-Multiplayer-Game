@@ -3820,6 +3820,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 673122065}
     m_Modifications:
+    - target: {fileID: 6015582182988856275, guid: 3bbf64ed6863a5643ab5a0a75ccc96bd,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 191325797}
+    - target: {fileID: 6015582182988856275, guid: 3bbf64ed6863a5643ab5a0a75ccc96bd,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OpenRoom
+      objectReference: {fileID: 0}
+    - target: {fileID: 6015582182988856275, guid: 3bbf64ed6863a5643ab5a0a75ccc96bd,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 6015582182988856277, guid: 3bbf64ed6863a5643ab5a0a75ccc96bd,
         type: 3}
       propertyPath: m_LocalPosition.x
