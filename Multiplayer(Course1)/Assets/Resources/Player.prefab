@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 7378860627442135698}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -120,6 +120,8 @@ MonoBehaviour:
   - {fileID: 6181656390177508715}
   - {fileID: 6181656390058282558}
   - {fileID: 6181656390630662319}
+  playerHitImpact: {fileID: 3062270905621026477, guid: c21c13e6ee32ed446ab32c6ac2cbd68e,
+    type: 3}
 --- !u!143 &6181656389688080441
 CharacterController:
   m_ObjectHideFlags: 0
@@ -226,7 +228,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6181656390058282553
 Transform:
   m_ObjectHideFlags: 0
@@ -305,7 +307,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6181656390177508714
 Transform:
   m_ObjectHideFlags: 0
