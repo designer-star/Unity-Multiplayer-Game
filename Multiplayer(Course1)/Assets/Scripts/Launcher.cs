@@ -22,7 +22,8 @@ public class Launcher : MonoBehaviourPunCallbacks
 
 
     public GameObject roomScreen;
-    public TMP_Text roomNameText;
+    public TMP_Text roomNameText, playerNameLabel;
+    private List<TMP_Text> allPlayersName = new List<TMP_Text>();
 
 
     public GameObject errorScreen;
@@ -74,8 +75,9 @@ public class Launcher : MonoBehaviourPunCallbacks
     {
         CloseMenu();
         menuButtons.SetActive(true);
-    }
 
+        PhotonNetwork.NickName = Random.Range(0, 1000).ToString();
+    }
 
     public void OpenRoomCreate()
     {
@@ -104,6 +106,27 @@ public class Launcher : MonoBehaviourPunCallbacks
         roomScreen.SetActive(true);
 
         roomNameText.text = PhotonNetwork.CurrentRoom.Name;
+
+        ListAllPlayers();
+    }
+
+    private void ListAllPlayers()
+    {
+        foreach (TMP_Text player in allPlayersName)
+        {
+            Destroy(player.gameObject);
+        }
+        allPlayersName.Clear();
+
+        Player[] players = PhotonNetwork.PlayerList;
+        for (int i = 0; i < players.Length; i++)
+        {
+            TMP_Text newPlayerLabel = Instantiate(playerNameLabel, playerNameLabel.transform.parent);
+            newPlayerLabel.text = players[i].NickName;
+            newPlayerLabel.gameObject.SetActive(true);
+
+            allPlayersName.Add(newPlayerLabel);
+        }
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
