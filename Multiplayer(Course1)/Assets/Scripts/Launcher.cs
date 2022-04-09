@@ -35,6 +35,12 @@ public class Launcher : MonoBehaviourPunCallbacks
     private List<RoomButton> allRoomButtons = new List<RoomButton>();
 
 
+
+
+    public GameObject nameInputScreen;
+    public TMP_InputField nameInput;
+    public bool hasSetNick;
+
     private void Awake()
     {
         instance = this;
@@ -61,6 +67,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         roomScreen.SetActive(false);
         errorScreen.SetActive(false);
         roomBrowserScreen.SetActive(false);
+        nameInputScreen.SetActive(false);
     }
 
 
@@ -77,6 +84,21 @@ public class Launcher : MonoBehaviourPunCallbacks
         menuButtons.SetActive(true);
 
         PhotonNetwork.NickName = Random.Range(0, 1000).ToString();
+
+        if (!hasSetNick)
+        {
+            CloseMenu();
+            nameInputScreen.SetActive(true);
+
+            if (PlayerPrefs.HasKey(("playerName")))
+            {
+                nameInput.text = PlayerPrefs.GetString("playerName");
+            }
+        }
+        else
+        {
+            PhotonNetwork.NickName = PlayerPrefs.GetString("playerName");
+        }
     }
 
     public void OpenRoomCreate()
@@ -214,6 +236,21 @@ public class Launcher : MonoBehaviourPunCallbacks
         CloseMenu();
         loadingText.text = "Join Room";
         loadingScreen.SetActive(true);
+    }
+
+    public void SetNickname()
+    {
+        if (!string.IsNullOrEmpty(nameInput.text))
+        {
+            PhotonNetwork.NickName = nameInput.text;
+
+            PlayerPrefs.SetString("playerName", nameInput.text);
+            CloseMenu();
+            menuButtons.SetActive(true);
+
+            hasSetNick = true;
+
+        }
     }
 
     public void QuitGame()
