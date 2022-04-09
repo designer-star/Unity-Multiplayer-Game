@@ -55,7 +55,7 @@ public class PlayerControl : MonoBehaviour
         UIController.instance.weaponTempSlider.maxValue = maxHeat;
         
 
-        SwitchGun();
+        //SwitchGun();
 
         Transform newTrans = SpownManager.instance.GetSpawnPoint();
         transform.position = newTrans.position;
