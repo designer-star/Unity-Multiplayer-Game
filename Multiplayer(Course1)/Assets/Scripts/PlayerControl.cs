@@ -57,9 +57,9 @@ public class PlayerControl : MonoBehaviour
 
         //SwitchGun();
 
-        Transform newTrans = SpownManager.instance.GetSpawnPoint();
-        transform.position = newTrans.position;
-        transform.rotation = newTrans.rotation;
+        //Transform newTrans = SpownManager.instance.GetSpawnPoint();
+        //transform.position = newTrans.position;
+        //transform.rotation = newTrans.rotation;
     }
 
     // Update is called once per frame
