@@ -229,6 +229,8 @@ public class PlayerControl : MonoBehaviourPunCallbacks
             {
                 Debug.Log("We hit " + hit.collider.gameObject.GetPhotonView().Owner.NickName);
                 PhotonNetwork.Instantiate(playerHitImpact.name, hit.point, Quaternion.identity);
+
+                hit.collider.gameObject.GetPhotonView().RPC("DealDamage", RpcTarget.All, photonView.Owner.NickName);
             }
             else
             {
@@ -251,6 +253,13 @@ public class PlayerControl : MonoBehaviourPunCallbacks
         allGuns[selectedGun].muzzleFlash.SetActive(true);
         muzzleConter = muzzleDisplayTime;
     }
+
+    [PunRPC]
+    public void DealDamage(string damager)
+    {
+        Debug.Log("I've been hit " + damager);
+    }
+
 
 
     private void LateUpdate()
