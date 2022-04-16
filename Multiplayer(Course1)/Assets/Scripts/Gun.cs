@@ -10,15 +10,6 @@ public class Gun : MonoBehaviour
 
     public GameObject muzzleFlash;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public int shotDamage;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
