@@ -370,6 +370,7 @@ MonoBehaviour:
   - {fileID: 0}
   playerHitImpact: {fileID: 0}
   maxHealth: 100
+  animator: {fileID: 0}
 --- !u!23 &136452570
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -566,6 +567,7 @@ MonoBehaviour:
   - {fileID: 0}
   playerHitImpact: {fileID: 0}
   maxHealth: 100
+  animator: {fileID: 0}
 --- !u!23 &188128202
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -742,6 +744,7 @@ MonoBehaviour:
   - {fileID: 0}
   playerHitImpact: {fileID: 0}
   maxHealth: 100
+  animator: {fileID: 0}
 --- !u!23 &233837879
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -878,6 +881,7 @@ MonoBehaviour:
   - {fileID: 0}
   playerHitImpact: {fileID: 0}
   maxHealth: 100
+  animator: {fileID: 0}
 --- !u!23 &234049525
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2189,6 +2193,7 @@ MonoBehaviour:
   - {fileID: 0}
   playerHitImpact: {fileID: 0}
   maxHealth: 100
+  animator: {fileID: 0}
 --- !u!23 &529747964
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3556,6 +3561,7 @@ MonoBehaviour:
   - {fileID: 0}
   playerHitImpact: {fileID: 0}
   maxHealth: 100
+  animator: {fileID: 0}
 --- !u!23 &1012421121
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4270,6 +4276,7 @@ MonoBehaviour:
   - {fileID: 0}
   playerHitImpact: {fileID: 0}
   maxHealth: 100
+  animator: {fileID: 0}
 --- !u!23 &1324001597
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5266,6 +5273,7 @@ MonoBehaviour:
   - {fileID: 0}
   playerHitImpact: {fileID: 0}
   maxHealth: 100
+  animator: {fileID: 0}
 --- !u!23 &1809115628
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -6188,6 +6196,7 @@ MonoBehaviour:
   - {fileID: 0}
   playerHitImpact: {fileID: 0}
   maxHealth: 100
+  animator: {fileID: 0}
 --- !u!23 &2073725040
 MeshRenderer:
   m_ObjectHideFlags: 0

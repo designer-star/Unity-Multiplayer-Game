@@ -52,6 +52,8 @@ public class PlayerControl : MonoBehaviourPunCallbacks
     public int maxHealth = 100;
     private int currentHealth;
 
+    public Animator animator;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -206,6 +208,8 @@ public class PlayerControl : MonoBehaviourPunCallbacks
                 }
             }
 
+            animator.SetBool("grounded", isGrounded);
+            animator.SetFloat("speed", moveDir.magnitude);
 
 
             if (Input.GetKeyDown(KeyCode.Escape))
