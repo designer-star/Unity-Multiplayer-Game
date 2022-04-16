@@ -53,6 +53,7 @@ public class PlayerControl : MonoBehaviourPunCallbacks
     private int currentHealth;
 
     public Animator animator;
+    public GameObject playerModel;
 
     // Start is called before the first frame update
     void Start()
@@ -65,14 +66,21 @@ public class PlayerControl : MonoBehaviourPunCallbacks
 
         currentHealth = maxHealth;
 
-        UIController.instance.healthSlider.maxValue = maxHealth;
-        UIController.instance.healthSlider.value = currentHealth;
 
         //SwitchGun();
 
         //Transform newTrans = SpownManager.instance.GetSpawnPoint();
         //transform.position = newTrans.position;
         //transform.rotation = newTrans.rotation;
+
+
+        if (photonView.IsMine)
+        {
+            playerModel.SetActive(false);
+
+            UIController.instance.healthSlider.maxValue = maxHealth;
+            UIController.instance.healthSlider.value = currentHealth;
+        }
     }
 
     // Update is called once per frame
