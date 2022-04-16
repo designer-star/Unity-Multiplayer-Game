@@ -63,6 +63,9 @@ public class PlayerControl : MonoBehaviourPunCallbacks
 
         currentHealth = maxHealth;
 
+        UIController.instance.healthSlider.maxValue = maxHealth;
+        UIController.instance.healthSlider.value = currentHealth;
+
         //SwitchGun();
 
         //Transform newTrans = SpownManager.instance.GetSpawnPoint();
@@ -74,7 +77,7 @@ public class PlayerControl : MonoBehaviourPunCallbacks
     void Update()
     {
         if (photonView.IsMine)
-        {
+        {          
             mouseInput = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y")) * mouseSensitivity;
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + mouseInput.x, transform.rotation.eulerAngles.z);
             verticalRotStore += mouseInput.y;
@@ -270,12 +273,14 @@ public class PlayerControl : MonoBehaviourPunCallbacks
         //gameObject.SetActive(false);
         if (photonView.IsMine)
         {
-            currentHealth -= damegeAmont;
+            currentHealth -= damegeAmont;            
 
             if (currentHealth <= 0)
             {
                 PlayerSpawner.instance.Die(damager);
             }
+
+            UIController.instance.healthSlider.value = currentHealth;
         }
     }
 
