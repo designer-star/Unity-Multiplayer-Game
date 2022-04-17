@@ -197,11 +197,31 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
                         break;
                 }
 
+                if(i == index)
+                {
+                    UpdateStatDisplay();
+                }
+
                 break;
             }
         }
     }
 
+
+
+    public void UpdateStatDisplay()
+    {
+        if (allPlayers.Count > index)
+        {
+            UIController.instance.killsText.text = "Kills: " + allPlayers[index].kills;
+            UIController.instance.deathsText.text = "Deaths: " + allPlayers[index].deaths;
+        }
+        else
+        {
+            UIController.instance.killsText.text = "Kills: 0";
+            UIController.instance.deathsText.text = "Deaths: 0";
+        }
+    }
 }
 [System.Serializable]   //for seeing variabels in unity 
 public class PlayerInfo  // new Class
