@@ -126,7 +126,7 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
             piece[0] = allPlayers[i].name;
             piece[1] = allPlayers[i].actor;
             piece[2] = allPlayers[i].kills;
-            piece[3] = allPlayers[i].death;
+            piece[3] = allPlayers[i].deaths;
 
             package[i] = piece;
         }
@@ -163,14 +163,43 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
         }
     }
 
-    public void UpdateStatSend()
+    public void UpdateStatSend(int actorSending, int statToChange, int amountToChange)
     {
+        object[] package = new object[] { actorSending, statToChange, amountToChange };
 
+        PhotonNetwork.RaiseEvent(                   //For Sending Event
+            (byte)EventCodes.UpdateStat,
+            package,
+            new RaiseEventOptions { Receivers = ReceiverGroup.All },
+            new SendOptions { Reliability = true }
+            );
     }
 
-    public void UpdateStatReceive(object[] dataRecive)
+    public void UpdateStatReceive(object[] dataRecive)  // for all players
     {
+        int actor = (int)dataRecive[0];
+        int statType = (int)dataRecive[1];
+        int amount = (int)dataRecive[2];
 
+        for (int i = 0; i < allPlayers.Count; i++)
+        {
+            if(allPlayers[i].actor == actor)
+            {
+                switch(statType)  //Ctr + 2r change all dependences
+                {
+                    case 0: //kills
+                        allPlayers[i].kills += amount;
+                        Debug.Log("Player " + allPlayers[i].name + " : kills" + allPlayers[i].kills);
+                        break;
+                    case 1: //death
+                        allPlayers[i].deaths += amount;
+                        Debug.Log("Player " + allPlayers[i].name + " : death" + allPlayers[i].deaths);
+                        break;
+                }
+
+                break;
+            }
+        }
     }
 
 }
@@ -178,13 +207,13 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
 public class PlayerInfo  // new Class
 {
     public string name;
-    public int actor, kills, death; //values    actor - specific number in the network
+    public int actor, kills, deaths; //values    actor - specific number in the network
 
     public PlayerInfo(string _name, int _actors, int _kills, int _death) //Constructor
     {
         name = _name;
         actor = _actors;
         kills = _kills;
-        death = _death;
+        deaths = _death;
     }     
 }
