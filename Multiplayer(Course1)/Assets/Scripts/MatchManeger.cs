@@ -98,7 +98,7 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
         package[2] = 0;
         package[3] = 0;
 
-        PhotonNetwork.RaiseEvent(
+        PhotonNetwork.RaiseEvent(                   //For Sending Event
             (byte)EventCodes.NewPlayer,
             package,
             new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient },
@@ -111,16 +111,56 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
         PlayerInfo player = new PlayerInfo((string)dataRecive[0], (int)dataRecive[1], (int)dataRecive[2], (int)dataRecive[3]);
 
         allPlayers.Add(player);
+
+        ListPlayersSend();
     }
 
     public void ListPlayersSend()
     {
+        object[] package = new object[allPlayers.Count];
 
+        for(int i = 0; i < allPlayers.Count; i++)
+        {
+            object[] piece = new object[4];
+
+            piece[0] = allPlayers[i].name;
+            piece[1] = allPlayers[i].actor;
+            piece[2] = allPlayers[i].kills;
+            piece[3] = allPlayers[i].death;
+
+            package[i] = piece;
+        }
+
+        PhotonNetwork.RaiseEvent(                   //For Sending Event
+            (byte)EventCodes.ListPlayers,
+            package,
+            new RaiseEventOptions { Receivers = ReceiverGroup.All },
+            new SendOptions { Reliability = true }
+            );
     }
 
     public void ListPlayersReceive(object[] dataRecive)
     {
+        allPlayers.Clear();
 
+        for (int i = 0; i < dataRecive.Length; i++)
+        {
+            object[] piece = (object[])dataRecive[i];
+
+            PlayerInfo player = new PlayerInfo(
+                (string)piece[0],
+                (int)piece[1],
+                (int)piece[2],
+                (int)piece[3]
+                );
+
+            allPlayers.Add(player);
+
+            if(PhotonNetwork.LocalPlayer.ActorNumber == player.actor)
+            {
+                index = i;
+            }
+        }
     }
 
     public void UpdateStatSend()
