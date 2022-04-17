@@ -17,6 +17,16 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
         instance = this;
     }
 
+    public List<PlayerInfo> allPlayers = new List<PlayerInfo>();
+    private int index;
+
+    public enum EventCode : byte
+    {
+        NewPlayer,
+        ListPlayers,
+        ChangeStat
+    }
+
 
     // Start is called before the first frame update
     void Start()
@@ -49,4 +59,18 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
         PhotonNetwork.RemoveCallbackTarget(this);
     }
 
+}
+[System.Serializable]   //for seeing variabels in unity 
+public class PlayerInfo  // new Class
+{
+    public string name;
+    public int actor, kills, death; //values
+
+    public PlayerInfo(string _name, int _actors, int _kills, int _death) //Constructor
+    {
+        name = _name;
+        actor = _actors;
+        kills = _kills;
+        death = _death;
+    }     
 }
