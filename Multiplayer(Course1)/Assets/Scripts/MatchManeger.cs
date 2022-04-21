@@ -17,12 +17,6 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
         instance = this;
     }
 
-    public List<PlayerInfo> allPlayers = new List<PlayerInfo>();
-    private int index;
-
-
-    public List<LeaderboardPlayer> lboardPlayers = new List<LeaderboardPlayer>();
-
     public enum EventCodes : byte
     {
         NewPlayer,
@@ -30,6 +24,23 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
         UpdateStat
     }
 
+    public List<PlayerInfo> allPlayers = new List<PlayerInfo>();
+    private int index;
+
+
+    public List<LeaderboardPlayer> lboardPlayers = new List<LeaderboardPlayer>();
+
+    public enum GameState
+    {
+        Waiting,
+        Playing,
+        Ending
+    }
+
+    public int killsToWin = 3;
+    public Transform mapCamPoint;
+    public GameState state = GameState.Waiting;
+    public float waitAfterEnding = 5f;
 
     // Start is called before the first frame update
     void Start()
@@ -43,6 +54,8 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
         else
         {
             NewPlayerSend(PhotonNetwork.NickName);
+
+            state = GameState.Playing;
         }
     }
 
@@ -53,7 +66,7 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
         {
             ShowLeaderboard();
         }
-        if (Input.GetKeyUp(KeyCode.Tab))
+        if (Input.GetKeyUp(KeyCode.Tab) && state != GameState.Ending)
         {
             UIController.instance.leaderboard.SetActive(false);
         }
@@ -127,7 +140,9 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public void ListPlayersSend()
     {
-        object[] package = new object[allPlayers.Count];
+        object[] package = new object[allPlayers.Count + 1];
+
+        package[0] = state;
 
         for(int i = 0; i < allPlayers.Count; i++)
         {
@@ -138,7 +153,7 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
             piece[2] = allPlayers[i].kills;
             piece[3] = allPlayers[i].deaths;
 
-            package[i] = piece;
+            package[i + 1] = piece;
         }
 
         PhotonNetwork.RaiseEvent(                   //For Sending Event
@@ -153,7 +168,9 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         allPlayers.Clear();
 
-        for (int i = 0; i < dataRecive.Length; i++)
+        state = (GameState)dataRecive[0];
+
+        for (int i = 1; i < dataRecive.Length; i++)
         {
             object[] piece = (object[])dataRecive[i];
 
@@ -168,7 +185,7 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
 
             if(PhotonNetwork.LocalPlayer.ActorNumber == player.actor)
             {
-                index = i;
+                index = i - 1;
             }
         }
     }
@@ -220,6 +237,8 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
                 break;
             }
         }
+
+        ScoreCheck();
     }
 
 
@@ -288,6 +307,34 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
 
 
         return sorted;
+    }
+
+    public override void OnLeftRoom()
+    {
+        base.OnLeftRoom();
+
+        SceneManager.LoadScene(0);
+    }
+
+    void ScoreCheck()
+    {
+        bool winnerFound = false;
+        foreach (PlayerInfo player in allPlayers)
+        {
+            if(player.kills >= killsToWin && killsToWin > 0)
+            {
+                winnerFound = true;
+                break;
+            }
+        }
+        if (winnerFound)
+        {
+            if(PhotonNetwork.IsMasterClient && state != GameState.Ending)
+            {
+                state = GameState.Ending;
+                ListPlayersSend();
+            }
+        }
     }
 }
 [System.Serializable]   //for seeing variabels in unity 
