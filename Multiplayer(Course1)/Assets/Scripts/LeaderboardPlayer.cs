@@ -11,6 +11,6 @@ public class LeaderboardPlayer : MonoBehaviour
     {
         playerNameText.text = name;
         killsText.text = kills.ToString();
-        deathsText.text = kills.ToString();
+        deathsText.text = deaths.ToString();
     }
 }

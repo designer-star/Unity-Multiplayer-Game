@@ -20,6 +20,9 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
     public List<PlayerInfo> allPlayers = new List<PlayerInfo>();
     private int index;
 
+
+    public List<LeaderboardPlayer> lboardPlayers = new List<LeaderboardPlayer>();
+
     public enum EventCodes : byte
     {
         NewPlayer,
@@ -46,7 +49,14 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            ShowLeaderboard();
+        }
+        if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            UIController.instance.leaderboard.SetActive(false);
+        }
     }
 
     public void OnEvent(EventData photonEvent)
@@ -193,13 +203,18 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
                         break;
                     case 1: //death
                         allPlayers[i].deaths += amount;
-                        Debug.Log("Player " + allPlayers[i].name + " : death" + allPlayers[i].deaths);
+                        Debug.Log("Player " + allPlayers[i].name + " : deaths" + allPlayers[i].deaths);
                         break;
                 }
 
                 if(i == index)
                 {
                     UpdateStatDisplay();
+                }
+
+                if (UIController.instance.leaderboard.activeInHierarchy)
+                {
+                    ShowLeaderboard();
                 }
 
                 break;
@@ -221,6 +236,58 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
             UIController.instance.killsText.text = "Kills: 0";
             UIController.instance.deathsText.text = "Deaths: 0";
         }
+    }
+
+
+    void ShowLeaderboard()
+    {
+        UIController.instance.leaderboard.SetActive(true);
+        foreach(LeaderboardPlayer lp in lboardPlayers)
+        {
+            Destroy(lp.gameObject);
+        }
+        lboardPlayers.Clear();
+        UIController.instance.leaderboardPlayerDisplay.gameObject.SetActive(false);
+
+        List<PlayerInfo> sorted = SortPlayers(allPlayers);
+
+        foreach(PlayerInfo player in sorted)
+        {
+            LeaderboardPlayer newPlayerDisplay = Instantiate(UIController.instance.leaderboardPlayerDisplay, UIController.instance.leaderboardPlayerDisplay.transform.parent);
+
+            newPlayerDisplay.SetDetails(player.name, player.kills, player.deaths);
+            newPlayerDisplay.gameObject.SetActive(true);
+
+            lboardPlayers.Add(newPlayerDisplay);
+        }
+    }
+
+    private List<PlayerInfo> SortPlayers(List<PlayerInfo> players)
+    {
+        List<PlayerInfo> sorted = new List<PlayerInfo>();
+
+        while(sorted.Count < players.Count)
+        {
+            int highest = -1;
+            PlayerInfo selectedPlayer = players[0];
+
+            foreach(PlayerInfo player in players)
+            {
+                if (!sorted.Contains(player))
+                {
+                    if(player.kills > highest)
+                    {
+                        selectedPlayer = player;
+                        highest = player.kills;
+                    }
+
+                    sorted.Add(player);
+                }
+            }
+        }
+
+
+        return sorted;
     }
 }
 [System.Serializable]   //for seeing variabels in unity 
