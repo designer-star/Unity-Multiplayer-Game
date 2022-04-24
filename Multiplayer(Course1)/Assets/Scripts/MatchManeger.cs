@@ -358,6 +358,9 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
         UIController.instance.endScreen.SetActive(true);
         ShowLeaderboard();
 
+        Camera.main.transform.position = mapCamPoint.position;
+        Camera.main.transform.rotation = mapCamPoint.rotation;
+
         StartCoroutine(EndCo());
     }
 
