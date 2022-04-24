@@ -21,7 +21,8 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         NewPlayer,
         ListPlayers,
-        UpdateStat
+        UpdateStat,
+        NextMatch
     }
 
     public List<PlayerInfo> allPlayers = new List<PlayerInfo>();
@@ -41,6 +42,9 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
     public Transform mapCamPoint;
     public GameState state = GameState.Waiting;
     public float waitAfterEnding = 5f;
+
+
+    public bool perpetual;
 
     // Start is called before the first frame update
     void Start()
@@ -99,6 +103,12 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
                 case EventCodes.UpdateStat:
 
                     UpdateStatReceive(data);
+
+                    break;
+
+                case EventCodes.NextMatch:
+
+                    NextMatchReceive();
 
                     break;
             }
@@ -368,8 +378,46 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         yield return new WaitForSeconds(waitAfterEnding);
 
-        PhotonNetwork.AutomaticallySyncScene = false;
-        PhotonNetwork.LeaveRoom();
+        if (!perpetual)
+        {
+            PhotonNetwork.AutomaticallySyncScene = false;
+            PhotonNetwork.LeaveRoom();
+        }
+        else
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                NextMatchSend();
+            }
+        }
+    }
+
+    public void NextMatchSend()
+    {
+        PhotonNetwork.RaiseEvent(                   //For Sending Event
+    (byte)EventCodes.NextMatch,
+    null,
+    new RaiseEventOptions { Receivers = ReceiverGroup.All },
+    new SendOptions { Reliability = true }
+    );
+    }
+
+    public void NextMatchReceive()
+    {
+        state = GameState.Playing;
+
+        UIController.instance.endScreen.SetActive(false);
+        UIController.instance.leaderboard.SetActive(false);
+
+        foreach(PlayerInfo player in allPlayers)
+        {
+            player.kills = 0;
+            player.deaths = 0;
+        }
+
+        UpdateStatDisplay();
+
+        PlayerSpawner.instance.SpawnPlayer();
     }
 }
 [System.Serializable]   //for seeing variabels in unity 
