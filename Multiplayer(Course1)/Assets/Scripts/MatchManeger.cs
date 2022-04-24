@@ -48,7 +48,8 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
         
         if (!PhotonNetwork.IsConnected)
         {
-            Cursor.lockState = CursorLockMode.None;
+            //Cursor.lockState = CursorLockMode.None;
+
             SceneManager.LoadScene(0);
         }
         else
@@ -188,6 +189,7 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
                 index = i - 1;
             }
         }
+        StateCheck();
     }
 
     public void UpdateStatSend(int actorSending, int statToChange, int amountToChange)
@@ -335,6 +337,36 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
                 ListPlayersSend();
             }
         }
+    }
+
+    void StateCheck()
+    { 
+        if(state == GameState.Ending)
+        {
+            EndGame();
+        }
+    }
+
+    void EndGame()
+    {
+        state = GameState.Ending;
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.DestroyAll();
+        }
+        UIController.instance.endScreen.SetActive(true);
+        ShowLeaderboard();
+
+        StartCoroutine(EndCo());
+    }
+
+    private IEnumerator EndCo()
+    {
+        yield return new WaitForSeconds(waitAfterEnding);
+
+        PhotonNetwork.AutomaticallySyncScene = false;
+        PhotonNetwork.LeaveRoom();
     }
 }
 [System.Serializable]   //for seeing variabels in unity 
