@@ -46,6 +46,9 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public bool perpetual;
 
+    public float matchLength = 100f;
+    private float currentMatchTimer;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -61,6 +64,8 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
             NewPlayerSend(PhotonNetwork.NickName);
 
             state = GameState.Playing;
+
+            SetupTimer();
         }
     }
 
@@ -74,6 +79,27 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
         if (Input.GetKeyUp(KeyCode.Tab) && state != GameState.Ending)
         {
             UIController.instance.leaderboard.SetActive(false);
+        }
+
+        if(currentMatchTimer > 0f && state == GameState.Playing)
+        {
+            currentMatchTimer -= Time.deltaTime;
+
+            if(currentMatchTimer <= 0f)
+            {
+                currentMatchTimer = 0f;
+
+                state = GameState.Ending;
+
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    ListPlayersSend();
+
+                    StateCheck();
+                }
+            }
+
+            UpdateTimerDisplay();
         }
     }
 
@@ -434,6 +460,25 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
         UpdateStatDisplay();
 
         PlayerSpawner.instance.SpawnPlayer();
+
+        SetupTimer();
+    }
+
+
+    public void SetupTimer()
+    {
+        if(matchLength > 0)
+        {
+            currentMatchTimer = matchLength;
+            UpdateTimerDisplay();
+        }
+    }
+
+    public void UpdateTimerDisplay()
+    {
+        var timeToDisplay = System.TimeSpan.FromSeconds(currentMatchTimer);
+
+        UIController.instance.timerText.text = timeToDisplay.Minutes.ToString("00") + ":" + timeToDisplay.Seconds.ToString("00"); // ("00") - want to see atleast 2 characters
     }
 }
 [System.Serializable]   //for seeing variabels in unity 
