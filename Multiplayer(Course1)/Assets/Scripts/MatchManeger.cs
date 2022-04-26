@@ -22,7 +22,8 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
         NewPlayer,
         ListPlayers,
         UpdateStat,
-        NextMatch
+        NextMatch,
+        TimerSinc
     }
 
     public List<PlayerInfo> allPlayers = new List<PlayerInfo>();
@@ -48,6 +49,7 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public float matchLength = 100f;
     private float currentMatchTimer;
+    private float sendTimer;
 
     // Start is called before the first frame update
     void Start()
@@ -66,6 +68,11 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
             state = GameState.Playing;
 
             SetupTimer();
+
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                UIController.instance.timerText.gameObject.SetActive(false);
+            }
         }
     }
 
@@ -81,25 +88,35 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
             UIController.instance.leaderboard.SetActive(false);
         }
 
-        if(currentMatchTimer > 0f && state == GameState.Playing)
-        {
-            currentMatchTimer -= Time.deltaTime;
+        if (PhotonNetwork.IsMasterClient) {
 
-            if(currentMatchTimer <= 0f)
+            if (currentMatchTimer > 0f && state == GameState.Playing)
             {
-                currentMatchTimer = 0f;
+                currentMatchTimer -= Time.deltaTime;
 
-                state = GameState.Ending;
-
-                if (PhotonNetwork.IsMasterClient)
+                if (currentMatchTimer <= 0f)
                 {
+                    currentMatchTimer = 0f;
+
+                    state = GameState.Ending;
+                    
                     ListPlayersSend();
 
                     StateCheck();
+                    
+                }
+
+                UpdateTimerDisplay();
+
+                sendTimer -= Time.deltaTime;
+
+                if(sendTimer <= 0)
+                {
+                    sendTimer += 1f;
+
+                    TimerSend();
                 }
             }
-
-            UpdateTimerDisplay();
         }
     }
 
@@ -137,6 +154,13 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
                     NextMatchReceive();
 
                     break;
+                case EventCodes.TimerSinc:
+
+                    TimerRecive(data);
+
+                    break;
+
+
             }
         }
     }
@@ -479,6 +503,28 @@ public class MatchManeger : MonoBehaviourPunCallbacks, IOnEventCallback
         var timeToDisplay = System.TimeSpan.FromSeconds(currentMatchTimer);
 
         UIController.instance.timerText.text = timeToDisplay.Minutes.ToString("00") + ":" + timeToDisplay.Seconds.ToString("00"); // ("00") - want to see atleast 2 characters
+    }
+
+    public void TimerSend()
+    {
+        object[] packege = new object[] { (int)currentMatchTimer, state };
+
+         PhotonNetwork.RaiseEvent(                   //For Sending Event
+            (byte)EventCodes.TimerSinc,
+            packege,
+            new RaiseEventOptions { Receivers = ReceiverGroup.All },
+            new SendOptions { Reliability = true }
+            );
+    }
+
+    public void TimerRecive(object[] dataReceived)
+    {
+        currentMatchTimer = (int)dataReceived[0];
+        state = (GameState)dataReceived[1];
+
+        UpdateTimerDisplay();
+
+        UIController.instance.timerText.gameObject.SetActive(true);
     }
 }
 [System.Serializable]   //for seeing variabels in unity 
