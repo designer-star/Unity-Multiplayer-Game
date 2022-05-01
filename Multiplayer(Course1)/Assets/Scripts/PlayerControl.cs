@@ -62,6 +62,8 @@ public class PlayerControl : MonoBehaviourPunCallbacks
     private float adsSpeed = 5f;
     public Transform adsOutPoint, adsInPoint;
 
+    public AudioSource footStepSlow, footStepFast;
+
 
     // Start is called before the first frame update
     void Start()
@@ -130,10 +132,25 @@ public class PlayerControl : MonoBehaviourPunCallbacks
                 if (Input.GetKey(KeyCode.LeftShift))
                 {
                     activeMoveSpeed = runSpeed;
+                    if (!footStepFast.isPlaying && moveDir != Vector3.zero)
+                    {
+                        footStepFast.Play();
+                        footStepSlow.Stop();
+                    }
                 }
                 else
                 {
                     activeMoveSpeed = moveSpeed;
+                    if (!footStepSlow.isPlaying && moveDir != Vector3.zero)
+                    {
+                        footStepFast.Stop();
+                        footStepSlow.Play();
+                    }
+                }
+                if(moveDir == Vector3.zero || !isGrounded)
+                {
+                    footStepFast.Stop();
+                    footStepSlow.Stop();
                 }
 
                 float yVel = movement.y;
@@ -305,6 +322,9 @@ public class PlayerControl : MonoBehaviourPunCallbacks
         }
         allGuns[selectedGun].muzzleFlash.SetActive(true);
         muzzleConter = muzzleDisplayTime;
+
+        allGuns[selectedGun].shotSound.Stop();
+        allGuns[selectedGun].shotSound.Play();
     }
 
     [PunRPC]

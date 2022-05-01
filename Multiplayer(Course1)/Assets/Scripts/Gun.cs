@@ -14,4 +14,5 @@ public class Gun : MonoBehaviour
 
     public float adsZoom;
 
+    public AudioSource shotSound;
 }
