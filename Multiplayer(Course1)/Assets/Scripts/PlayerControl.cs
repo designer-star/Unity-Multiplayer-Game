@@ -59,6 +59,9 @@ public class PlayerControl : MonoBehaviourPunCallbacks
 
     public Material[] allSkins;
 
+    private float adsSpeed = 5f;
+    public Transform adsOutPoint, adsInPoint;
+
 
     // Start is called before the first frame update
     void Start()
@@ -94,7 +97,7 @@ public class PlayerControl : MonoBehaviourPunCallbacks
             gunHolder.localRotation = Quaternion.identity;
         }
 
-        playerModel.GetComponent<Renderer>().material = allSkins[photonView.Owner.ActorNumber % allSkins.Length];
+        playerModel.GetComponent<Renderer>().material = allSkins[photonView.Owner.ActorNumber % allSkins.Length]; 
     }
 
     // Update is called once per frame
@@ -237,6 +240,17 @@ public class PlayerControl : MonoBehaviourPunCallbacks
 
                 animator.SetBool("grounded", isGrounded);
                 animator.SetFloat("speed", moveDir.magnitude);
+
+                if (Input.GetMouseButton(1))
+                {
+                    cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, allGuns[selectedGun].adsZoom, adsSpeed * Time.deltaTime);
+                    gunHolder.position = Vector3.Lerp(gunHolder.position, adsInPoint.position, adsSpeed * Time.deltaTime);
+                }
+                else
+                {
+                    cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 60f, adsSpeed * Time.deltaTime);
+                    gunHolder.position = Vector3.Lerp(gunHolder.position, adsOutPoint.position, adsSpeed * Time.deltaTime);
+                }
 
 
                 if (Input.GetKeyDown(KeyCode.Escape))
